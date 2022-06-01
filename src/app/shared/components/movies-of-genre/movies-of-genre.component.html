@@ -1,0 +1,30 @@
+<!-- loop through the moviecards array and display the movie card posters -->
+<!-- Directives -->
+
+<div class="rounded">
+    <div class="container-fluid bg-light">
+        <div class="row">
+            <div class="col-6 col-lg-3 col-sm-4 col-xl-2" *ngFor="let movieCard of movieCards">
+                <!-- in MVC we called the partial view and send moviecard object to it -->
+                <!-- send data (movie card) from home component (parent component) to MovieCardComponent (child component) -->
+                <!-- pass the data using @Input decorator -->
+                <!-- How to emit event (data) from child component to parent component -->
+                <!-- user @Output decorator -->
+                <app-movie-card [movieCard]="movieCard">
+
+                </app-movie-card>
+            </div>
+        </div>
+    </div>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+    </nav>
+</div>
+
