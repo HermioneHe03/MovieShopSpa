@@ -6,10 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'movieshopspa';
+  title = 'MovieShopSPA';
 }
-
-// Modules -> components inside those modules,
-
-// main,ts => appModule => AppComponent => View
-// HomePageView => movieCArd
