@@ -8,12 +8,12 @@ import { UserComponent } from './user.component';
 
 const routes: Routes = [
   {
-    path: '', component: UserComponent,
+    path: '', component:UserComponent,
     children: [
       { path: 'purchases', component: PurchasesComponent },
       { path: 'favorites', component: FavoritesComponent },
       { path: 'reviews', component: ReviewsComponent },
-      { path: 'edit-profile/:id', component: EditProfileComponent }
+      { path: 'edit-profile/:id', component: EditProfileComponent}
     ]
   }
 ];

@@ -1,13 +1,3 @@
- <div class="card mb-4">
-    <!-- 'movie card here' -->
-
-    <!-- .../movies/id MovieDetailsComponent => call MovieDetails Service => movie details api -->
-    <!-- we use router link -->
-    <!-- <a [routerLink]="['/movies/', movieCard.id]">
-      <img src="{{ movieCard.posterUrl }}" class="img-fluid rounded shadow" alt="{{ movieCard.title }}"/>
-    </a> -->
-
-    <a [routerLink]="[ '/movies', movieCard.id]">
-      <img src="{{ movieCard.posterUrl }}" class="img-fluid rounded shadow" alt="{{ movieCard.title }}"/>
-    </a>
- </div>
+<div class="card mb-4">
+    <img src="{{movieCard.posterUrl}}" alt="{{movieCard.title}}" class="img-fluid rounded">
+</div>

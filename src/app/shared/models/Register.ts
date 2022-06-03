@@ -1,7 +1,7 @@
-export interface Register {
+export interface Register{
     email: string;
     password: string;
     firstName: string;
     lastName: string;
-    dateOfBirth: string;
+    dateOfBirth: Date;
 }
