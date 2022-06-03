@@ -1,113 +1,55 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { Login } from 'src/app/shared/models/Login';
-import { User } from 'src/app/shared/models/User';
-
-import { JwtHelperService } from '@auth0/angular-jwt';
-import { Register } from 'src/app/shared/models/Register';
+import { Login } from 'src/app/shared/Models/Login';
+import { JwtHelperService } from "@auth0/angular-jwt";
+import { User } from 'src/app/shared/Models/User';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
 
-  constructor(private http: HttpClient) { }
-
-  // 
+  private currentUserSubject = new BehaviorSubject<any>({} as User);
+  public currentUser = this.currentUserSubject.asObservable();
 
   private isLoggedInSubject = new BehaviorSubject<boolean>(false);
   public isLoggedIn = this.isLoggedInSubject.asObservable();
 
-  private currentUserSubject = new BehaviorSubject<User>({} as User);
-
-  public currentUser = this.currentUserSubject.asObservable();
-
   private jwtHelper = new JwtHelperService();
 
-  login(userLogin: Login): Observable<boolean> {
-    // take email/password fromlogin componentand post it to API
-    // localhost:.../api/account/login
-    // JWT => if success, store the JWT in local storage
-    
-    // map is similar to LINQ select
-    return this.http.post(`${environment.apiBaseUrl}account/login`, userLogin)
-    .pipe(
-      map( (response: any) => {
-          // if the status code is 200, 201
-          // save the response to local storage (JWT)
-          console.log("inside Account Service: Login");
-          console.log(response);
-          if (response) {
-            localStorage.setItem('token', response.token);
-            this.populateUserInfo();
-            
-            return true;
-          }
-          return false;
-        } 
-      )
-    );
+  constructor(private http: HttpClient) { }
+
+  login(login: Login): Observable<boolean>{
+    return this.http.post('https://localhost:7046/api/Account/login', login).pipe( map ( (response: any) => {
+    if(response){
+      localStorage.setItem('token', response.token);
+      this.populateUserInfoFromJwtToken();
+      return true;
+    }
+    return false;
+    }));
   }
 
-  register(userRegister: Register): Observable<boolean> {
-    // take the object from register component and post it to API
-    return this.http.post(`${environment.apiBaseUrl}account/register`, userRegister)
-    .pipe(
-      map(
-        (response: any) => {
-          console.log("inside Account Service: Register");
-          console.log(response);
-          if (response) {
-            return true;
-          }
-          return false;
-        }
-      )
-    )
+  logout(){
+    localStorage.removeItem('token');
+
+    this.currentUserSubject.next({} as User);
+    this.isLoggedInSubject.next(false);
   }
 
-  logout() {
-    // remove the JWT token from local storage
-  }
+  populateUserInfoFromJwtToken() {
 
-  populateUserInfo() {
-    // get the token from local storage, if the token is present 
-    // and token is not expired then
-    // push true value to the subject
+    var tokenValue = localStorage.getItem('token');
 
-    var token = localStorage.getItem('token');
+    if(tokenValue && !this.jwtHelper.isTokenExpired(tokenValue)){
 
-    if ( token &&  !this.jwtHelper.isTokenExpired(token) ) {
-      // decode the token and get hte data into user object
-      // there is a library in Angular that can decode the token
-      // set the authentication subject to true
+      const decodedToken = this.jwtHelper.decodeToken(tokenValue);
 
-      const decodedToken = this.jwtHelper.decodeToken(token);
-      
-      // console.log("inside the decode method");
-      // console.log(decodedToken);
-
+      this.currentUserSubject.next(decodedToken);
       this.isLoggedInSubject.next(true);
 
-      // set the user subject with decoded value
-      // console.log("inside account service, here is the decoded token " + JSON.stringify(decodedToken) );
-      var tokenStr = JSON.stringify(decodedToken);
-      var tokenJson = JSON.parse(tokenStr);
-
-      var user = {
-        email: tokenJson.email,
-        exp: tokenJson.exp,
-        family_name: tokenJson.family_name,
-        given_name: tokenJson.given_name,
-        birthdate: tokenJson.birthdate,
-        nameid: tokenJson.nameid,
-        role: []
-      }
-      console.log(user);
-      this.currentUserSubject.next(user);
-
     }
+
   }
 }
